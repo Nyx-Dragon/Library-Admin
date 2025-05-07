@@ -11,7 +11,13 @@ const Book = db.sequelize.define(
     description: {
       type: DataTypes.STRING,
     },
-    length: {
+    author: {
+      type: DataTypes.STRING,
+    },
+    publicatioYear: {
+      type: DataTypes.INTEGER,
+    },
+    stock: {
       type: DataTypes.INTEGER,
     },
   },
