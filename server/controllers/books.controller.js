@@ -1,5 +1,6 @@
 const Book = require("../models/Book")
 const Loan = require("../models/Loan")
+const Member = require("../models/Member")
 
 const getBooks = (req, res) => {
     res.send("Test")

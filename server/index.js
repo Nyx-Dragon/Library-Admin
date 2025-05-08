@@ -4,6 +4,8 @@ const cors = require("cors");
 const express = require("express");
 const db = require("./db");
 const booksRouter = require("./routes/books.routes");
+const membersRoutes = require("./routes/member.routes")
+const loansRoutes = require("./routes/loans.routes")
 
 const main = () => {
   const app = express();
@@ -15,6 +17,8 @@ const main = () => {
   });
 
   app.use("/books", booksRouter);
+  app.use("/members", membersRoutes);
+  app.use("/loans",loansRoutes);
 
   app.listen(port, () => {
     console.log(`App listening on ${port}`);
