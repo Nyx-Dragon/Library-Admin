@@ -1,6 +1,6 @@
-## API Documentacion
+## API Documentation
 
-### Use case: Registrar un socio
+### Use case: Registrar un socio.
 
 ```
 POST /members
@@ -14,7 +14,7 @@ RESPONSE
 }
 ```
 
-### Use case: Recibir un libro
+### Use case: Retirar un libro
 
 ```
 POST /loans
@@ -23,32 +23,32 @@ REQUEST
     memberId: int,
     bookId: int
 }
+RESPONSE
+{
+    deadline: datetime
+}
 ```
 
 ### Use case: Devolver un libro
 
 ```
-PUT /loans
+PATCH /loans
 REQUEST
 {
     bookId: int
 }
 RESPONSE
 {
-    cancelad: 'int' | 'delayed' #TBD
+    canceledLoans: int,
 }
 ```
 
-tengo carpeta server con carpetas controllers, models, routes y en raiz db.js y index.js
-
-### Use case: Lstar los prestamos y filtrar por socio
+### Use case: Listar los prestamos y filtrar por socio
 
 ```
-GET /loans?memberId=member_id&active_loans=bool
+GET /loan?memberId=member_id&activeLoans=bool
 REQUEST
-{
-    me: int
-}
+{}
 RESPONSE
 {
     loans: [
@@ -56,19 +56,25 @@ RESPONSE
             returnDate: datetime,
             loanDate: datetime,
             deadline: datetime,
-            bookTitle: string
+            bookTitle: string,
+            memberName: string
         }
     ]
 }
 ```
 
-### Obener prestamo por libro
+## Elige tu propia aventura
 
-### Agrupar por SBN
+1. Cliente!
 
-### Descontar o aumentar stock
+2. Consulta SQL para obtener un ranking de socios con mayor cantidad de prestamos
 
-1.Cliente!
-2.Consulta SQL para obtener rankin de socios con mayor cantidad de prestamos
-3.Implementar Swagger para documentar (y probar) la API
-4.Explorar Jest pata testear la API
+3. Implementar Swagger para documentar (y probar) la API
+
+4. Explorar Jest para testear la API
+
+## Objetivos:
+
+1. Que el login funcione coorrectamente con hashes
+
+2. Implementar registrer endpoint
