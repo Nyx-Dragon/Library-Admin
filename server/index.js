@@ -22,7 +22,7 @@ const main = () => {
     });
 
     // Definir rutas
-    app.post("/login", usersRoutes);
+    app.use("/", usersRoutes);
     app.use("/books", booksRouter);
     app.use("/members", membersRoutes);
     app.use("/loans", authMiddleware, loansRoutes);
