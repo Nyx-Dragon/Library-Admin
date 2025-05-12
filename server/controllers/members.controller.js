@@ -1,23 +1,31 @@
 const Member = require("../models/Member");
+const bcryptjs = require("bcryptjs");
 
 const login = async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    if (password != "messi") {
-        res.status(400).send("INORRECT_PASSWORD");
+
+    //   const hashedPassword = bcryptjs.hashSync(password);
+    //   res.send(hashedPassword);
+    //   return;
+
+    const user = await Member.findOne({ where: { user: username } });
+    if (!user) {
+        res.status(400).send("INCORRECT_USER_OR_PASSWORD");
         return;
     }
-    const createdMember = await Member.findOne({ where: { name: username } });
-    if (!createdMember) {
-        res.status(404).send("INCORRECT_USERNAME");
+    const isPasswordMatch = bcryptjs.compareSync(password, user.password);
+    if (!isPasswordMatch) {
+        res.status(400).send("INCORRECT_USER_OR_PASSWORD");
+        return;
     }
-    res.status(201).send({ llave: createdMember.id });
+    res.status(201).send({ llave: user.id });
 };
 
 const createMember = async (req, res) => {
-    const membersName = req.body.name;
+    const memberName = req.body.name;
     const createdMember = await Member.create({
-        name: membersName,
+        name: memberName,
         registrationDate: new Date(),
     });
     res.status(201).send({ id: createdMember.id });

@@ -15,14 +15,6 @@ const Loan = db.sequelize.define("Loan", {
         type: DataTypes.DATE,
         allowNull: false,
     },
-    bookId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    memberId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
 });
 Book.hasMany(Loan);
 Loan.belongsTo(Book);
