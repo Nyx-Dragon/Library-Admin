@@ -1,0 +1,89 @@
+body {
+    font-family: "Georgia", serif;
+    background: #f2e9dc;
+    color: #2c2c2c;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #fffdf6;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    border: 1px solid #e0d6c3;
+}
+
+h1,
+h2 {
+    text-align: center;
+    color: #3e3e3e;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-left: 200px;
+    margin-right: 200px;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+input {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #c4b7a6;
+    border-radius: 6px;
+    background-color: #fffaf2;
+    font-family: "Georgia", serif;
+}
+
+button {
+    background: #8b5e3c;
+    color: #fff;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-family: "Georgia", serif;
+}
+
+button:hover {
+    background: #734c2e;
+}
+
+.book {
+    background: #f9f4ec;
+    border-left: 5px solid #8b5e3c;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ded2c2;
+}
+
+.book strong {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 8px;
+    color: #3e3e3e;
+}
+
+.book em {
+    color: #7a6f64;
+}
+
+.book button {
+    background: #a94442;
+    margin-top: 12px;
+    font-family: "Georgia", serif;
+}
+
+.book button:hover {
+    background: #843534;
+}

@@ -1,79 +1,62 @@
-// CLIENTE
-const BASE_URL = "http://localhost:8000";
+const API_URL = "http://localhost:8000/books";
 
-const inputAnimal = document.getElementById("inputAnimal");
-const inputStrength = document.getElementById("inputStrength");
-const btnCreate = document.getElementById("btnCreate");
+const bookList = document.getElementById("bookList");
+const bookForm = document.getElementById("bookForm");
 
-const createAnimal = () => {
-  const animalToCreate = inputAnimal.value;
-  const strengthToCreate = Number(inputStrength.value);
+const loadBooks = async () => {
+  bookList.innerHTML = "Cargando libros...";
+  try {
+    const res = await fetch(API_URL);
+    const books = await res.json();
 
-  fetch(BASE_URL + "/animals", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify({
-      name: animalToCreate,
-      strength: strengthToCreate,
-    }),
-  }).then(() => {
-    inputAnimal.value = "";
-    inputStrength.value = "";
-    getAnimals();
-  });
-};
+    // Mostrar la respuesta para depurar
+    console.log(books); 
 
-const getAnimals = () => {
-  fetch(BASE_URL + "/animals")
-    .then((res) => res.json())
-    .then((animals) => {
-      const animalsContainer = document.getElementById("animalsContainer");
-      animalsContainer.innerHTML = "";
-
-      animals.forEach((animal) => {
-        animalsContainer.innerHTML += `
-          <h2>${animal.name} - F: ${
-          animal.strength
-        } <button onclick="deleteAnimal(${
-          animal.id
-        })">Eliminar</button> <button onclick='updateAnimal(${JSON.stringify(
-          animal
-        )})'>Modificar</button> </h2>
+    // Asegurarse de que books es un arreglo
+    if (Array.isArray(books)) {
+      bookList.innerHTML = "";
+      books.forEach((book) => {
+        const div = document.createElement("div");
+        div.className = "book";
+        div.innerHTML = `
+          <strong>${book.title}</strong> (${book.author})<br>
+          <em>${book.description || "Sin descripción"}</em><br>
+          <em>${book.publicationYear || "Sin Año especificado"}</em><br>
+          <button onclick="deleteBook(${book.id})">Eliminar</button>
         `;
+        bookList.appendChild(div);
       });
-    });
-};
-
-const deleteAnimal = (animalId) => {
-  fetch(BASE_URL + "/animals/" + animalId, {
-    method: "DELETE",
-  }).then(() => getAnimals());
-};
-
-const updateAnimal = (animal) => {
-  const nameToUpdate = prompt("Ingrese un nuevo nombre", animal.name);
-  const strengthToUpdate = prompt("Ingrese una nueva fuerza", animal.strength);
-  const idToUpdate = animal.id;
-  if(!nameToUpdate || !strengthToUpdate){
-    alert("Por favor ingrese nombre y fuerza");
-    return;
+    } else {
+      throw new Error("La respuesta no es un arreglo");
+    }
+  } catch (error) {
+    console.error("Error al cargar los libros:", error);
+    bookList.innerHTML = "Hubo un error al cargar los libros.";
   }
-  fetch(BASE_URL + `/animals/${idToUpdate}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: nameToUpdate,
-      strength: strengthToUpdate,
-    }),
-  }).then(() => {
-    alert(`Animal ${animal.name} actualizado a ${nameToUpdate}`);
-    getAnimals();
-  });
 };
 
-btnCreate.addEventListener("click", createAnimal);
-getAnimals();
+const addBook = async (e) => {
+  e.preventDefault();
+  const title = document.getElementById("title").value;
+  const description = document.getElementById("description").value;
+  const author = document.getElementById("author")
+  
+  await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, description, author }),
+  });
+
+  bookForm.reset();
+  loadBooks();
+};
+
+const deleteBook = async (id) => {
+  await fetch(`${API_URL}/${id}`, {
+    method: "DELETE",
+  });
+  loadBooks();
+};
+
+bookForm.addEventListener("submit", addBook);
+loadBooks();
