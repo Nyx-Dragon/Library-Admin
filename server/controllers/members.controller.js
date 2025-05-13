@@ -50,6 +50,8 @@ const createMember = async (req, res) => {
 
         // Hashear la contraseña
         const hashedPassword = await bcryptjs.hash(password, 10);
+        //Salt añade un numero para garantizar un poco mas de seguridad,
+        //(si alguien tiene un diccionario hash, y le añades un numero dificulta la traduccion);
 
         // Crear el miembro
         const createdMember = await Member.create({
@@ -59,12 +61,45 @@ const createMember = async (req, res) => {
             registrationDate: new Date(),
         });
 
-        res.status(201).send({ llave: createdMember.id });
+        res.status(201).send({ id: createdMember.id });
     } catch (err) {
         console.error(err);
         res.status(500).send("ERROR_AL_CREAR_MIEMBRO");
     }
 };
+/* const createMember = async (req, res) => {
+  const memberName = req.body.name;
+  const memberPassword = req.body.password;
+  const memberUsername = req.body.user;
 
+  if(!memberPassword || !memberName || !memberUsername){
+    res.status(400).send("Missing required info");
+    return
+  }
+
+  const hashedPassword = bcryptjs.hashSync(memberPassword);
+
+  try {
+    const existingUser = await Member.findOne({
+      where: { user: memberUsername },
+    });
+    if(existingUser){
+      res.status(400).send("User already exists");
+      return;
+    }
+
+    const createdMember = await Member.create({
+      name: memberName,
+      user: memberUsername,
+      registrationDate: new Date(),
+      password: hashedPassword,
+    });
+    res.status(201).send({ id: createdMember.id });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Unexpected register error");
+  }
+};
+ */
 exports.createMember = createMember;
 exports.login = login;
