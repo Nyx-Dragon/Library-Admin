@@ -15,14 +15,14 @@ const main = () => {
     app.use(cors());
     app.use(express.json());
 
-    db.sequelize.sync({ alter: true }).then(() => {
+    db.sequelize.sync().then(() => {
         console.log("Re-sync db.");
     });
 
     app.use("/books", booksRouter);
     app.use("/members", membersRouter);
     app.use("/loans", authMiddleware.authMiddleware, loansRouter);
-    app.use("/", userRoutes);
+    app.use("/users", userRoutes);
 
     app.listen(port, () => {
         console.log(`App listening on ${port}`);

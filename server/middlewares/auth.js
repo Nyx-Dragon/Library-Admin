@@ -4,33 +4,38 @@ const jwt = require("jsonwebtoken");
 const { jwt_secret } = require("../config/config.json")["development"];
 
 const authMiddleware = async (req, res, next) => {
-    //revisa llave
-    const userKey = req.headers["llave"];
-    if (!userKey) {
-        res.status(401).send("Missing auth header");
-        return;
-    }
-    req.user = user.dataValues;
-    //llave es el id del usuario
-    console.log("Se ejecuta el middleware", user);
+    // 1. Verifica si hay token en los headers
+    const token = req.headers.authorization;
 
-    const user = await Member.findByPk(userKey);
-    if (!userKey) {
-        res.status(401).send("Missing auth header");
-        return;
+    if (!token) {
+        return res.status(401).send("Missing Authorization token");
     }
 
-    const token = req.headers - authorizacion;
-    const peyload = jwt.verify(token, jwt_secret);
-    const userToken = user.token;
+    try {
+        // 2. Verifica que el token sea válido
+        const payload = jwt.verify(token, jwt_secret);
 
-    if (!userToken) {
-        res.status(401).send("Usuario no autorizado");
+        // 3. Busca al usuario en la base de datos
+        const user = await Member.findByPk(payload.id);
+
+        if (!user) {
+            return res.status(401).send("User not found");
+        }
+
+        // 4. Adjunta el usuario al objeto req para que esté disponible en los controladores
+        req.user = user.dataValues;
+
+        console.log(
+            "Middleware ejecutado correctamente para el usuario:",
+            user.user
+        );
+
+        // 5. Continua a la siguiente función middleware o controlador
+        next();
+    } catch (error) {
+        console.error("Error en middleware auth:", error);
+        return res.status(401).send("Invalid token");
     }
-    //llave es el id del usuario
-    console.log("Se ejecuta el middleware", userKey);
-
-    next();
 };
 
 exports.authMiddleware = authMiddleware;
