@@ -14,7 +14,7 @@ const authMiddleware = async (req, res, next) => {
     try {
         // 2. Verifica que el token sea válido
         const payload = jwt.verify(token, jwt_secret);
-
+        console.log(payload);
         // 3. Busca al usuario en la base de datos
         const user = await Member.findByPk(payload.id);
 
