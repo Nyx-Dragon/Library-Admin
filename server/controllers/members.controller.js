@@ -1,6 +1,9 @@
 const Member = require("../models/Member");
 const bcryptjs = require("bcryptjs");
 
+const jwt = require("jsonwebtoken");
+const { jwt_secret } = require("../config/config.json")["development"];
+
 const login = async (req, res) => {
     console.log("BODY RECIBIDO:", req.body);
 
@@ -27,8 +30,9 @@ const login = async (req, res) => {
         res.status(400).send("INCORRECT_USER_OR_PASSWORD");
         return;
     }
+    let token = jwt.sign({ id: user.id }, jwt_secret);
 
-    res.status(201).send({ llave: user.id });
+    res.status(200).send("Token: " + token);
 };
 
 const createMember = async (req, res) => {
@@ -68,6 +72,10 @@ const createMember = async (req, res) => {
         res.status(500).send("ERROR_AL_CREAR_MIEMBRO");
     }
 };
+
+exports.createMember = createMember;
+exports.login = login;
+
 //version Nicolas
 /* const createMember = async (req, res) => {
   const memberName = req.body.name;
@@ -103,5 +111,3 @@ const createMember = async (req, res) => {
   }
 };
  */
-exports.createMember = createMember;
-exports.login = login;
