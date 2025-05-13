@@ -32,7 +32,7 @@ const login = async (req, res) => {
     }
     let token = jwt.sign({ id: user.id }, jwt_secret);
 
-    res.status(200).send("Token: " + token);
+    res.status(200).send({ token: token });
 };
 
 const createMember = async (req, res) => {
