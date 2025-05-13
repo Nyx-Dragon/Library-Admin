@@ -51,7 +51,8 @@ const createMember = async (req, res) => {
         // Hashear la contraseña
         const hashedPassword = await bcryptjs.hash(password, 10);
         //Salt añade un numero para garantizar un poco mas de seguridad,
-        //(si alguien tiene un diccionario hash, y le añades un numero dificulta la traduccion);
+        //(si alguien tiene un diccionario hash(un hacker), y le añades un numero
+        //le  dificulta la traduccion);
 
         // Crear el miembro
         const createdMember = await Member.create({
@@ -67,6 +68,7 @@ const createMember = async (req, res) => {
         res.status(500).send("ERROR_AL_CREAR_MIEMBRO");
     }
 };
+//version Nicolas
 /* const createMember = async (req, res) => {
   const memberName = req.body.name;
   const memberPassword = req.body.password;
