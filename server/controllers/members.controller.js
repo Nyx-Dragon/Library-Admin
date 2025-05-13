@@ -6,6 +6,7 @@ const login = async (req, res) => {
 
     const username = req.body.username;
     const password = req.body.password;
+
     //const hashedPassword = bcryptjs.hashSync(password);
     //res.send(hashedPassword);
     //return;
@@ -31,39 +32,40 @@ const login = async (req, res) => {
 };
 
 const createMember = async (req, res) => {
+    const { name, user, password } = req.body;
+
+    // Validar datos obligatorios
+    if (!name || !user || !password) {
+        res.status(400).send("FALTAN_DATOS_EN_EL_BODY");
+        return;
+    }
+
     try {
-        const { name, username, password } = req.body;
-
-        if (!name || !username || !password) {
-            return res
-                .status(400)
-                .json({ message: "Faltan campos obligatorios" });
-        }
-
-        const existingUser = await Member.findOne({
-            where: { user: username },
-        });
+        // Verificar si el usuario ya existe
+        const existingUser = await Member.findOne({ where: { user } });
         if (existingUser) {
-            return res
-                .status(400)
-                .json({ message: "El nombre de usuario ya existe" });
+            res.status(400).send("USUARIO_YA_EXISTE");
+            return;
         }
 
-        const hashedPassword = bcryptjs.hashSync(password, 10);
+        // Hashear la contraseña
+        const hashedPassword = await bcryptjs.hash(password, 10);
 
+        // Crear el miembro
         const createdMember = await Member.create({
-            name: name,
-            user: username,
+            name,
+            user,
             password: hashedPassword,
             registrationDate: new Date(),
         });
 
-        res.status(201).json({ id: createdMember.id });
-    } catch (error) {
-        console.error("Error al crear miembro:", error);
-        res.status(500).json({ message: "Error interno del servidor" });
+        res.status(201).send({ id: createdMember.id });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("ERROR_AL_CREAR_MIEMBRO");
     }
 };
 
 exports.createMember = createMember;
+
 exports.login = login;
