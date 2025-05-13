@@ -59,7 +59,7 @@ const createMember = async (req, res) => {
             registrationDate: new Date(),
         });
 
-        res.status(201).send({ id: createdMember.id });
+        res.status(201).send({ llave: createdMember.id });
     } catch (err) {
         console.error(err);
         res.status(500).send("ERROR_AL_CREAR_MIEMBRO");
