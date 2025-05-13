@@ -67,5 +67,4 @@ const createMember = async (req, res) => {
 };
 
 exports.createMember = createMember;
-
 exports.login = login;
