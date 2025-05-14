@@ -5,8 +5,19 @@ const jwt = require("jsonwebtoken");
 const { jwt_secret } = require("../config/config.json")["development"];
 
 const login = async (req, res) => {
+    console.log("BODY RECIBIDO:", req.body);
+
     const username = req.body.username;
     const password = req.body.password;
+
+    //const hashedPassword = bcryptjs.hashSync(password);
+    //res.send(hashedPassword);
+    //return;
+
+    if (!username || !password) {
+        res.status(400).send("FALTAN_DATOS_EN_EL_BODY");
+        return;
+    }
 
     const user = await Member.findOne({ where: { user: username } });
     if (!user) {
@@ -19,43 +30,45 @@ const login = async (req, res) => {
         res.status(400).send("INCORRECT_USER_OR_PASSWORD");
         return;
     }
-
-    let token = jwt.sign({ userId: user.id }, jwt_secret);
-
-    res.status(201).send({ token: token });
+    let token = jwt.sign({ id: user.id }, jwt_secret);
+    res.status(200).send({ token: token });
 };
 
 const createMember = async (req, res) => {
-    const memberName = req.body.name;
-    const memberPassword = req.body.password;
-    const memberUsername = req.body.user;
+    const { name, user, password } = req.body;
 
-    if (!memberPassword || !memberName || !memberUsername) {
-        res.status(400).send("Missing required info");
+    // Validar datos obligatorios
+    if (!name || !user || !password) {
+        res.status(400).send("FALTAN_DATOS_EN_EL_BODY");
         return;
     }
 
-    const hashedPassword = bcryptjs.hashSync(memberPassword);
-
     try {
-        const existingUser = await Member.findOne({
-            where: { user: memberUsername },
-        });
+        // Verificar si el usuario ya existe
+        const existingUser = await Member.findOne({ where: { user } });
         if (existingUser) {
-            res.status(400).send("User already exists");
+            res.status(400).send("USUARIO_YA_EXISTE");
             return;
         }
 
+        // Hashear la contraseña
+        const hashedPassword = await bcryptjs.hash(password, 10);
+        //Salt añade un numero para garantizar un poco mas de seguridad,
+        //(si alguien tiene un diccionario hash(un hacker), y le añades un numero
+        //le  dificulta la traduccion);
+
+        // Crear el miembro
         const createdMember = await Member.create({
-            name: memberName,
-            user: memberUsername,
-            registrationDate: new Date(),
+            name,
+            user,
             password: hashedPassword,
+            registrationDate: new Date(),
         });
+
         res.status(201).send({ id: createdMember.id });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("Unexpected register error");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("ERROR_AL_CREAR_MIEMBRO");
     }
 };
 
